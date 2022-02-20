@@ -180,7 +180,6 @@ class Game:
                 helpPage = pygame.transform.scale(helpPage, (WIDTH, HEIGHT))
                 self.screen.blit(helpPage, (0, 0))
 
-
                 helpFlag = True
                 while helpFlag:
 
@@ -217,7 +216,6 @@ class Game:
                     pygame.display.update()
                     self.clock.tick(FPS)
 
-
             click = False
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -232,7 +230,6 @@ class Game:
                         click = True
             pygame.display.update()
             self.clock.tick(FPS)
-
 
     def help_page(self):
         pygame.mixer.music.load('78bpm gametimeee.mp3')
