@@ -15,15 +15,13 @@ class Game:
         pygame.display.set_caption("Online School Simulator")
         # icon = pygame.image.load("")
         # pygame.display.set_icon(icon)
-
+        self.score = 0
+        self.wave = 0
+        self.timeMultiplier = 0
         # initialize font
         self.font = pygame.font.SysFont("comicsansms", 95)
 
-        self.rightAnswers = 0
 
-        # initliaze clock
-        self.clock = pygame.time.Clock()
-        self.current_time = 0
 
         # create the screen
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -33,13 +31,30 @@ class Game:
         self.bg_img = pygame.image.load('images2/background_V1.png')
         self.bg_img = pygame.transform.scale(self.bg_img, (WIDTH, HEIGHT))
 
+
+
+
+
+        self.screen.blit(self.bg_img, (0, 0))
+        # Loops through and adds every icon to the screen
+        self.randomizeScreen()
+
+    def randomizeScreen(self):
+
+        #counts all right answers
+        self.rightAnswers = 0
+
+        # initliaze clock
+        self.clock = pygame.time.Clock()
+        self.current_time = 0
+
         # FOCUS BAR
         self.focusHeight = 1
         self.MaxFocus = pygame.draw.rect(self.screen, (255, 255, 255), (1750, 40, 150, 900))
         self.focus = pygame.draw.rect(self.screen, (0, 0, 0), (1750, 40, 150, self.focusHeight))
 
         # CREATE ICONS
-        listOfIcons = self.initIcons()
+        self.listOfIcons = self.initIcons()
 
         # COMPUTER SCREEN
         self.computerScreen = []
@@ -54,8 +69,6 @@ class Game:
         self.rectWidth = 210
         self.rectHeight = 210
 
-        self.screen.blit(self.bg_img, (0, 0))
-        # Loops through and adds every icon to the screen
         for row in range(5):
             # appends row
             self.computerScreen.append([])
@@ -63,7 +76,7 @@ class Game:
             self.visited.append([])
             for col in range(3):
                 # chose random icon load it and then scale it
-                ICON = listOfIcons[random.randint(0, 15)]
+                ICON = self.listOfIcons[random.randint(0, 15)]
                 tmp_image = pygame.image.load(ICON.name)
                 print(ICON.points)
                 print(self.rightAnswers)
@@ -85,9 +98,6 @@ class Game:
                 # displays icons
                 display.update()
         pygame.display.update()
-
-    # def randomizeScreen(self):
-
     # def removeIcon(self, col, row):
 
     def initIcons(self):
@@ -112,7 +122,7 @@ class Game:
         # Game Loop
         running = True
         counter = 1
-
+        flag = False
         while running:
 
             # pygame.display.update()
@@ -145,13 +155,13 @@ class Game:
                                     self.visited[i][j] = True
                                 print("anything")
                                 if icon.points > 0:
-
+                                    self.score += icon.points
                                     print("counter" + str(counter) + "  RightAnswers" + str(self.rightAnswers))
                                     if counter == self.rightAnswers:
-                                        running = False
-                                        counter = 0
-                                    print(f"i = {i}, j = {j}, points = {icon.points},name = {icon.name}")
-                                    print(counter)
+                                        flag = True
+                                        counter = 1
+                                    # print(f"i = {i}, j = {j}, points = {icon.points},name = {icon.name}")
+                                    # print(counter)
                                     rec = pygame.draw.rect(self.screen, (255, 255, 255), (
                                     self.startX + (self.rectWidth * i), self.startY + (self.rectWidth * j),
                                     self.rectWidth, self.rectHeight))
@@ -168,6 +178,11 @@ class Game:
 
             pygame.display.update()
             self.clock.tick(60)
+            if flag:
+                self.wave+=1
+                self.score += 100*self.wave
+                self.randomizeScreen()
+                flag = False
 
 
 if __name__ == '__main__':
