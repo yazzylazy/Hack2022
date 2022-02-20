@@ -5,7 +5,7 @@ from icons import Icon
 from win_screen import Win
 from settings import *
 
-
+/Users/yasin/Documents/GitHub/Hack2022/__pycache__/endgame.cpython-38.pyc
 class Game:
 
     def __init__(self):
