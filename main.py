@@ -160,13 +160,11 @@ class Game:
         while True:
             pos = pygame.mouse.get_pos()
 
-            playbutton = pygame.Rect(590, 300, 565, 140)
-            htpbutton = pygame.Rect(590, 500, 565, 150)
+            buttonOne = pygame.Rect(590, 300, 565, 140)
+            buttonTwo = pygame.Rect(590, 500, 565, 140)
 
-            # pygame.draw.rect(self.screen, (0, 0, 255), Rect(590, 300, 565, 140))
-            # pygame.draw.rect(self.screen, (0, 0, 255), htpbutton)
-
-            if playbutton.collidepoint(pos) and pygame.mouse.get_pressed()[0]:
+            if buttonOne.collidepoint(pos) and pygame.mouse.get_pressed()[0]:
+                #self.screen.fill(0,0,0)
                 self.randomizeScreen()
                 self.run()
                 print("clicked buttonOne")
@@ -230,6 +228,7 @@ class Game:
                         click = True
             pygame.display.update()
             self.clock.tick(FPS)
+
 
     def help_page(self):
         pygame.mixer.music.load('78bpm gametimeee.mp3')
