@@ -17,6 +17,7 @@ class Game:
         self.score = 0
         self.wave = 0
         self.timeMultiplier = 0
+        self.level = 0
 
         # initialize font
         self.font = pygame.font.SysFont("comicsansms", 95)
@@ -36,6 +37,12 @@ class Game:
         self.screen.blit(self.bg_img, (0, 0))
         # Loops through and adds every icon to the screen
         # self.randomizeScreen()
+        print(f"\n---------\ninit! wave = {self.wave}")
+
+    def advance_level(self, new_level):
+        self.wave = 0
+        self.level == 1
+        print(f"\n-------\nNEW LEVEL, level = {self.level}")
 
     def randomizeScreen(self):
 
@@ -273,7 +280,8 @@ class Game:
                 self.wave += 1
                 self.score += 100*self.wave
                 print(f"\nwave = {self.wave}, score = {self.score}")
-                if self.wave == 3:
+                if self.wave == 2:
+                    self.advance_level(self.level + 1)
                     winScreen = Win()
                     winScreen.winScreen()
                 self.randomizeScreen()
