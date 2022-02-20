@@ -1,9 +1,8 @@
-import random
-
 import pygame, sys
 import random
 
 from icons import Icon
+from win_screen import Win
 from settings import *
 
 
@@ -17,7 +16,7 @@ class Game:
         # pygame.display.set_icon(icon)
         self.score = 0
         self.wave = 0
-        self.timeMultiplier = 0
+        self.level = 0
 
         # initialize font
         self.font = pygame.font.SysFont("comicsansms", 95)
@@ -37,16 +36,21 @@ class Game:
         self.screen.blit(self.bg_img, (0, 0))
         # Loops through and adds every icon to the screen
         # self.randomizeScreen()
+        print(f"\n---------\ninit!")
+
+    def advance_level(self):
+        self.wave = 0
+        self.level += 1
+        self.score += self.level * 100 # level bonus
+        print(f"\n-------\nNEW LEVEL, level = {self.level}, score = {self.score}")
 
     def randomizeScreen(self):
+        print("\nRandomize Screen")
 
         # Title and Icon
         pygame.display.set_caption("Online School Simulator")
         # icon = pygame.image.load("")
         # pygame.display.set_icon(icon)
-        self.score = 0
-        self.wave = 0
-        self.timeMultiplier = 0
         # initialize font
         self.font = pygame.font.SysFont("comicsansms", 95)
 
@@ -94,8 +98,8 @@ class Game:
                 # chose random icon load it and then scale it
                 ICON = self.listOfIcons[random.randint(0, 15)]
                 tmp_image = pygame.image.load(ICON.name)
-                print(ICON.points)
-                print(self.rightAnswers)
+                # print(ICON.points)
+                # print(self.rightAnswers)
                 if ICON.points > 0:
                     self.rightAnswers += 1
                 image = pygame.transform.scale(tmp_image, (self.rectWidth, self.rectHeight))
@@ -112,7 +116,7 @@ class Game:
                 self.computerScreen[row].append(transRect)
 
                 # displays icons
-                display.update()
+                pygame.display.update()
         pygame.display.update()
     # def removeIcon(self, col, row):
 
@@ -123,9 +127,14 @@ class Game:
                 Icon('images2/g_onenote.png', 5), Icon('images2/g_vmware.png', 100),
                 Icon('images2/g_outlook.png', 100), Icon('images2/g_word.png', 50), Icon('images2/g_zoom.png', 50),
                 Icon('images2/g_powerpoint.png', 100), Icon('images2/googleChrome.png', -100),
-                Icon('images/b_whatsapp.png', -100), Icon('images/b_twitter.png', -50),
-                Icon('images/b_tiktok.png', -50),
-                Icon('images/b_youtube.png', -100)]
+                Icon('images3/b_discord.png', -100), Icon('images3/b_facebook.png', -50),
+                Icon('images3/b_instagram.png', -50),
+                Icon('images3/b_music.png', -100), Icon('images3/b_netflix.png', -100),
+                Icon('images3/b_reddit.png', -100), Icon('images3/b_snapchat.png', -100),
+                Icon('images3/b_spotify.png', -100), Icon('images3/b_spotify.png', -100),
+                Icon('images3/b_tiktok.png', -50), Icon('images3/b_twitch.png', -100),
+                Icon('images3/b_twitter.png', -50), Icon('images3/b_whatsapp.png', -100),
+                Icon('images3/b_youtube.png', -100),]
 
     def draw_text(self, text, font, color, surface, x, y):
         textobj = font.render(text,1,color)
@@ -149,7 +158,7 @@ class Game:
                 #self.screen.fill(0,0,0)
                 self.randomizeScreen()
                 self.run()
-                print("clicked button")
+                print("clicked buttonOne")
 
             if buttonTwo.collidepoint(pos) and pygame.mouse.get_pressed()[0]:
                 self.help_page()
@@ -202,27 +211,25 @@ class Game:
             self.clock.tick(FPS)
 
     def run(self):
-
         pygame.mixer.music.load('78bpm gametimeee.mp3')
         # pygame.mixer.music.queue('78bpm gametimeee.mp3')
         # pygame.mixer.music.set_endevent(pygame.USEREVENT)
         pygame.mixer.music.play(-1)
         pygame.mixer.music.set_volume(.15)
-        maxFocus = 500
-        focus = 0
+
         # Game Loop
         running = True
-        counter = 1
+        counter = 0
         flag = False
         while running:
-
             # pygame.display.update()
             pos = pygame.mouse.get_pos()
             mouse = pygame.draw.circle(self.screen, (0, 0, 0), pos, 0)
 
             # decrease focus
             self.current_time = pygame.time.get_ticks()
-            self.focusHeight *= (1 + 0.0001 * (self.current_time / 1000))
+            self.focusHeight *= (1 + 0.01*self.level + 0.00005 * (self.current_time / 1000))
+            # print(f"just decreased focus, focusHeight = {self.focusHeight}")
             self.focus = pygame.draw.rect(self.screen, (0, 0, 0), (1750, 40, 150, self.focusHeight))
             if self.focusHeight >= 900:
                 exec(open('endgame.py').read())
@@ -244,22 +251,19 @@ class Game:
                             if rectImage.collidepoint(pos) and self.visited[i][j]:
                                 if icon.points < 0:
                                     self.visited[i][j] = True
-                                print("anything")
+                                # print("clicked on a rect")
                                 if icon.points > 0:
                                     self.score += icon.points
-                                    print("counter" + str(counter) + "  RightAnswers" + str(self.rightAnswers))
+                                    counter += 1
+                                    print("\tcounter" + str(counter) + "  RightAnswers" + str(self.rightAnswers))
                                     if counter == self.rightAnswers:
                                         flag = True
-                                        counter = 1
-                                    # print(f"i = {i}, j = {j}, points = {icon.points},name = {icon.name}")
-                                    # print(counter)
+                                        counter = 0
+                                    print(f"\ti = {i}, j = {j}, points = {icon.points}, name = {icon.name}")
                                     rec = pygame.draw.rect(self.screen, (255, 255, 255), (
                                     self.startX + (self.rectWidth * i), self.startY + (self.rectWidth * j),
                                     self.rectWidth, self.rectHeight))
                                     self.rectImage = pygame.draw.rect(self.screen, (255, 255, 255), (0, 0, 0, 0))
-                                    counter += 1
-
-
                                 else:
                                     self.focusHeight += -icon.points
                                     # if image.points<0:
@@ -270,8 +274,13 @@ class Game:
             pygame.display.update()
             self.clock.tick(60)
             if flag:
-                self.wave+=1
+                self.wave += 1
                 self.score += 100*self.wave
+                print(f"\nwave = {self.wave}, score = {self.score}")
+                if self.wave == 2:
+                    self.advance_level()
+                    winScreen = Win()
+                    winScreen.winScreen()
                 self.randomizeScreen()
                 flag = False
 

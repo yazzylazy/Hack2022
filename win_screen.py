@@ -13,29 +13,32 @@ class Win:
 
         # colours
         self.white = (255, 255, 255)
-        self.magenta = (255,0, 255)
+        self.magenta = (255, 0, 255)
 
         # defining a font
-        self.largeFont = pygame.font.SysFont('Corbel', 60)
+        self.largeFont = pygame.font.SysFont('comicsansms', 90)
+
+    def drawText(self, text, font, color, surface, x, y):
+        textobj = font.render(text,1,color)
+        textrect =textobj.get_rect()
+        textrect.topleft = (x, y)
+        surface.blit(textobj,textrect)
 
     def winScreen(self):
-        youWinMsg = self.largeFont.render('You Win!!', True, self.magenta)
-        playAgainMsg = self.largeFont.render("press space to play again", True, self.white)
-        self.screen.blit(youWinMsg, (WIDTH/2, HEIGHT/2-300))
-        self.screen.blit(playAgainMsg, (WIDTH/2, HEIGHT/2+100))
-
         winScreen = True
         while winScreen:
+            self.screen.fill(self.white)
+            self.drawText("You win!! congratsss", self.largeFont, self.magenta, self.screen,
+                          WIDTH / 2 - 200, HEIGHT / 2 - 200)
+            self.drawText("Press any key to play again", self.largeFont, self.magenta, self.screen,
+                          WIDTH / 2 - 200, HEIGHT / 2 + 100)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     winScreen = False
                 if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_SPACE:
-                        exec(open('main.py').read())
-                        winScreen = False
-
-            self.screen.fill(self.white)
+                    exec(open('main.py').read())
+                    winScreen = False
 
             # updates the frames of the game
             pygame.display.update()
