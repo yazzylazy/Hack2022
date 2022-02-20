@@ -18,10 +18,37 @@ class Game:
         self.score = 0
         self.wave = 0
         self.timeMultiplier = 0
+
         # initialize font
         self.font = pygame.font.SysFont("comicsansms", 95)
 
+        # initliaze clock
+        self.clock = pygame.time.Clock()
+        self.current_time = 0
 
+        # create the screen
+        self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
+        # self.screen.fill((255,0,0))
+
+        # set background
+        self.bg_img = pygame.image.load('images2/menu_v1.png')
+        self.bg_img = pygame.transform.scale(self.bg_img, (WIDTH, HEIGHT))
+
+        self.screen.blit(self.bg_img, (0, 0))
+        # Loops through and adds every icon to the screen
+        # self.randomizeScreen()
+
+    def randomizeScreen(self):
+
+        # Title and Icon
+        pygame.display.set_caption("Online School Simulator")
+        # icon = pygame.image.load("")
+        # pygame.display.set_icon(icon)
+        self.score = 0
+        self.wave = 0
+        self.timeMultiplier = 0
+        # initialize font
+        self.font = pygame.font.SysFont("comicsansms", 95)
 
         # create the screen
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -32,21 +59,10 @@ class Game:
         self.bg_img = pygame.transform.scale(self.bg_img, (WIDTH, HEIGHT))
 
 
-
-
-
         self.screen.blit(self.bg_img, (0, 0))
         # Loops through and adds every icon to the screen
-        self.randomizeScreen()
-
-    def randomizeScreen(self):
-
         #counts all right answers
         self.rightAnswers = 0
-
-        # initliaze clock
-        self.clock = pygame.time.Clock()
-        self.current_time = 0
 
         # FOCUS BAR
         self.focusHeight = 1
@@ -111,7 +127,82 @@ class Game:
                 Icon('images/b_tiktok.png', -50),
                 Icon('images/b_youtube.png', -100)]
 
+    def draw_text(self, text, font, color, surface, x, y):
+        textobj = font.render(text,1,color)
+        textrect =textobj.get_rect()
+        textrect.topleft = (x,y)
+        surface.blit(textobj,textrect)
+
+    def main_menu(self):
+
+        pygame.mixer.music.load('78bpm gametimeee.mp3')
+        pygame.mixer.music.play(-1)
+        pygame.mixer.music.set_volume(.15)
+
+        while True:
+            pos = pygame.mouse.get_pos()
+
+            buttonOne = pygame.Rect(590, 300, 565, 140)
+            buttonTwo = pygame.Rect(590, 500, 565, 140)
+
+            if buttonOne.collidepoint(pos) and pygame.mouse.get_pressed()[0]:
+                #self.screen.fill(0,0,0)
+                self.randomizeScreen()
+                self.run()
+                print("clicked button")
+
+            if buttonTwo.collidepoint(pos) and pygame.mouse.get_pressed()[0]:
+                self.help_page()
+
+            click = False
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                if event.type == KEYDOWN:
+                    if event.key == K_ESCAPE:
+                        pygame.quit()
+                        sys.exit()
+                if event.type == MOUSEBUTTONDOWN:
+                    if event.button == 1:
+                        click = True
+            pygame.display.update()
+            self.clock.tick(FPS)
+
+
+    def help_page(self):
+        pygame.mixer.music.load('78bpm gametimeee.mp3')
+        pygame.mixer.music.play(-1)
+        pygame.mixer.music.set_volume(.15)
+        self.bg_img = pygame.image.load('images2/howtoplay.png')
+        self.bg_img = pygame.transform.scale(self.bg_img, (WIDTH, HEIGHT))
+        self.bg_img.blit(self.bg_img, (0, 0))
+        display.update()
+        while True:
+            pos = pygame.mouse.get_pos()
+
+            buttonOne = pygame.Rect(590, 300, 565, 140)
+
+            if buttonOne.collidepoint(pos) and pygame.mouse.get_pressed()[0]:
+                self.main_menu()
+
+            click = False
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                if event.type == KEYDOWN:
+                    if event.key == K_ESCAPE:
+                        pygame.quit()
+                        sys.exit()
+                if event.type == MOUSEBUTTONDOWN:
+                    if event.button == 1:
+                        click = True
+            pygame.display.update()
+            self.clock.tick(FPS)
+
     def run(self):
+
         pygame.mixer.music.load('78bpm gametimeee.mp3')
         # pygame.mixer.music.queue('78bpm gametimeee.mp3')
         # pygame.mixer.music.set_endevent(pygame.USEREVENT)
@@ -134,7 +225,7 @@ class Game:
             self.focusHeight *= (1 + 0.0001 * (self.current_time / 1000))
             self.focus = pygame.draw.rect(self.screen, (0, 0, 0), (1750, 40, 150, self.focusHeight))
             if self.focusHeight >= 900:
-                running = False
+                exec(open('endgame.py').read())
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -187,4 +278,4 @@ class Game:
 
 if __name__ == '__main__':
     game = Game()
-    game.run()
+    game.main_menu()
