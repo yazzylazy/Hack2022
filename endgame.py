@@ -9,7 +9,9 @@ class End:
 
     def __init__(self):
         pygame.init()
+
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
+        self.screen.fill((0,0,0))
         self.death = pygame.image.load('images2/blueScreen.png')
         self.death = pygame.transform.scale(self.screen, (WIDTH, HEIGHT))
 
@@ -19,7 +21,6 @@ class End:
             pygame.display.update()
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN:
-                    exec(open('main.py').read())
                     game = Game()
                     game.main_menu()
             pygame.display.update()

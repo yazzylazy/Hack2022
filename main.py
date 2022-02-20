@@ -1,6 +1,6 @@
 import pygame, sys
 import random
-
+from endgame import *
 from icons import Icon
 from win_screen import Win
 from settings import *
@@ -148,20 +148,71 @@ class Game:
         pygame.mixer.music.play(-1)
         pygame.mixer.music.set_volume(.15)
 
+        self.screen.fill((0, 0, 0))
+
+        self.bg_img = pygame.image.load('images2/menu_v1.png')
+        self.bg_img = pygame.transform.scale(self.bg_img, (WIDTH, HEIGHT))
+
+        self.screen.blit(self.bg_img, (0, 0))
+
         while True:
             pos = pygame.mouse.get_pos()
 
-            buttonOne = pygame.Rect(590, 300, 565, 140)
-            buttonTwo = pygame.Rect(590, 500, 565, 140)
+            playbutton = pygame.Rect(590, 300, 565, 140)
+            htpbutton = pygame.Rect(590, 500, 565, 150)
 
-            if buttonOne.collidepoint(pos) and pygame.mouse.get_pressed()[0]:
-                #self.screen.fill(0,0,0)
+            # pygame.draw.rect(self.screen, (0, 0, 255), Rect(590, 300, 565, 140))
+            # pygame.draw.rect(self.screen, (0, 0, 255), htpbutton)
+
+            if playbutton.collidepoint(pos) and pygame.mouse.get_pressed()[0]:
                 self.randomizeScreen()
                 self.run()
                 print("clicked buttonOne")
 
-            if buttonTwo.collidepoint(pos) and pygame.mouse.get_pressed()[0]:
-                self.help_page()
+            if htpbutton.collidepoint(pos) and pygame.mouse.get_pressed()[0]:
+                print("CLICKED")
+                self.screen.fill((0, 0, 0))
+
+                # displaying the help page
+                helpPage = pygame.image.load('images2/howtoplay_v3.png')
+                helpPage = pygame.transform.scale(helpPage, (WIDTH, HEIGHT))
+                self.screen.blit(helpPage, (0, 0))
+
+                helpFlag = True
+                while helpFlag:
+
+                    pos = pygame.mouse.get_pos()
+
+                    # draw back button
+                    backButton = pygame.Rect(590, 330, 300, 300)
+
+                    # this isnt being detected
+                    if backButton.collidepoint(pos) and pygame.mouse.get_pressed()[0]:
+                        helpFlag = False
+
+                        # change background
+                        self.screen.fill((0, 0, 0))
+                        menuPage = pygame.image.load('images2/menu_v1.png')
+                        self.screen.blit(menuPage, (0, 0))
+
+                        # playbutton.move(590, 300)
+
+                        break
+
+                    click = False
+                    for event in pygame.event.get():
+                        if event.type == pygame.QUIT:
+                            pygame.quit()
+                            sys.exit()
+                        if event.type == KEYDOWN:
+                            if event.key == K_ESCAPE:
+                                pygame.quit()
+                                sys.exit()
+                        if event.type == MOUSEBUTTONDOWN:
+                            if event.button == 1:
+                                click = True
+                    pygame.display.update()
+                    self.clock.tick(FPS)
 
             click = False
             for event in pygame.event.get():
@@ -177,7 +228,6 @@ class Game:
                         click = True
             pygame.display.update()
             self.clock.tick(FPS)
-
 
     def help_page(self):
         pygame.mixer.music.load('78bpm gametimeee.mp3')
@@ -232,7 +282,12 @@ class Game:
             # print(f"just decreased focus, focusHeight = {self.focusHeight}")
             self.focus = pygame.draw.rect(self.screen, (0, 0, 0), (1750, 40, 150, self.focusHeight))
             if self.focusHeight >= 900:
-                exec(open('endgame.py').read())
+                self.screen.fill((0, 0, 0))
+                endpage = pygame.image.load('images2/blueScreen.png')
+                self.screen.blit(endpage, (0, 0))
+                pygame.display.update()
+                pygame.time.wait(3000)
+                self.main_menu()
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
