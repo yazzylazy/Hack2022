@@ -16,7 +16,6 @@ class Game:
         # pygame.display.set_icon(icon)
         self.score = 0
         self.wave = 0
-        self.timeMultiplier = 0
         self.level = 0
 
         # initialize font
@@ -37,21 +36,21 @@ class Game:
         self.screen.blit(self.bg_img, (0, 0))
         # Loops through and adds every icon to the screen
         # self.randomizeScreen()
-        print(f"\n---------\ninit! wave = {self.wave}")
+        print(f"\n---------\ninit!")
 
-    def advance_level(self, new_level):
+    def advance_level(self):
         self.wave = 0
-        self.level == 1
-        print(f"\n-------\nNEW LEVEL, level = {self.level}")
+        self.level += 1
+        self.score += self.level * 100 # level bonus
+        print(f"\n-------\nNEW LEVEL, level = {self.level}, score = {self.score}")
 
     def randomizeScreen(self):
+        print("\nRandomize Screen")
 
         # Title and Icon
         pygame.display.set_caption("Online School Simulator")
         # icon = pygame.image.load("")
         # pygame.display.set_icon(icon)
-        self.score = 0
-        self.timeMultiplier = 0
         # initialize font
         self.font = pygame.font.SysFont("comicsansms", 95)
 
@@ -117,7 +116,7 @@ class Game:
                 self.computerScreen[row].append(transRect)
 
                 # displays icons
-                display.update()
+                pygame.display.update()
         pygame.display.update()
     # def removeIcon(self, col, row):
 
@@ -212,27 +211,25 @@ class Game:
             self.clock.tick(FPS)
 
     def run(self):
-
         pygame.mixer.music.load('78bpm gametimeee.mp3')
         # pygame.mixer.music.queue('78bpm gametimeee.mp3')
         # pygame.mixer.music.set_endevent(pygame.USEREVENT)
         pygame.mixer.music.play(-1)
         pygame.mixer.music.set_volume(.15)
-        maxFocus = 500
-        focus = 0
+
         # Game Loop
         running = True
         counter = 0
         flag = False
         while running:
-
             # pygame.display.update()
             pos = pygame.mouse.get_pos()
             mouse = pygame.draw.circle(self.screen, (0, 0, 0), pos, 0)
 
             # decrease focus
             self.current_time = pygame.time.get_ticks()
-            self.focusHeight *= (1 + 0.0001 * (self.current_time / 1000))
+            self.focusHeight *= (1 + 0.01*self.level + 0.00005 * (self.current_time / 1000))
+            # print(f"just decreased focus, focusHeight = {self.focusHeight}")
             self.focus = pygame.draw.rect(self.screen, (0, 0, 0), (1750, 40, 150, self.focusHeight))
             if self.focusHeight >= 900:
                 exec(open('endgame.py').read())
@@ -281,7 +278,7 @@ class Game:
                 self.score += 100*self.wave
                 print(f"\nwave = {self.wave}, score = {self.score}")
                 if self.wave == 2:
-                    self.advance_level(self.level + 1)
+                    self.advance_level()
                     winScreen = Win()
                     winScreen.winScreen()
                 self.randomizeScreen()
